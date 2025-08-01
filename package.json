@@ -8,12 +8,13 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "render-build": "npm install && npm run build"
+    "render-build": "npm install && npm run build",
+    "build:prod": "npm run build && npm prune --production"
   },
   "keywords": [
     "demo",
@@ -24,6 +25,7 @@
   "author": "Your Name <your.email@example.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/axios": "^0.14.4",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "@types/supertest": "^6.0.3",
@@ -49,6 +51,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/knex": "^0.16.1",
     "@types/module-alias": "^2.0.4",
+    "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
