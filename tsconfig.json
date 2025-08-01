@@ -3,7 +3,7 @@
     /* Base Options */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2022",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -35,7 +35,8 @@
     
     /* Library Options */
     "lib": ["es2022"],
-    "types": ["node"]
+    "types": ["node", "jest"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": ["src/**/*", "knexfile.ts"],
   "exclude": ["node_modules", "dist"],

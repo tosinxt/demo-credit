@@ -4,10 +4,13 @@
   "description": "A Demo Credit application built with Node.js and TypeScript",
   "main": "dist/index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage",
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\""
   },
