@@ -65,6 +65,7 @@ const config: Record<string, Knex.Config> = {
     client: 'mysql2',
     connection: {
       ...dbConfig,
+      ssl: false, // Explicitly disable SSL
       typeCast: (
         field: { type: string; length: number; string: () => string },
         next: () => unknown
@@ -85,16 +86,14 @@ const config: Record<string, Knex.Config> = {
     },
   },
   production: {
-    client: 'mysql2',
-    connection: process.env.DATABASE_URL
-      ? {
-          uri: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false },
-        }
-      : {
-          ...dbConfig,
-          ssl: { rejectUnauthorized: false },
-        },
+    ...config.development,
+    connection: {
+      ...config.development.connection,
+      ssl: false, // Ensure SSL is disabled in production as well
+      ...(process.env.DATABASE_URL && {
+        // Add any production-specific connection options here
+      }),
+    },
     pool: {
       min: 2,
       max: 10,
