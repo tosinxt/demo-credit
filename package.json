@@ -14,9 +14,9 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "render-build": "npm install && npm run dev",
-    "build:prod": "npm run dev",
-    "postinstall": "npm run dev",
-    "heroku-postbuild": "npm run dev"
+    "build:prod": "npm install && npm run dev",
+    "postinstall": "npm install && npm run dev",
+    "heroku-postbuild": "npm install && npm run dev"
   },
   "keywords": [
     "demo",
