@@ -11,6 +11,8 @@ services:
         value: 10000
       - key: NPM_CONFIG_PRODUCTION
         value: false
+      - key: DB_CLIENT
+        value: mysql2
       - key: DB_HOST
         fromDatabase:
           name: demo-credit-db
@@ -19,10 +21,18 @@ services:
         fromDatabase:
           name: demo-credit-db
           property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: demo-credit-db
+          property: database
       - key: DB_USER
         fromDatabase:
           name: demo-credit-db
           property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: demo-credit-db
+          property: password
       - key: DB_PASSWORD
         fromDatabase:
           name: demo-credit-db
