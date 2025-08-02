@@ -1,64 +1,27 @@
 import type { Knex } from 'knex';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-/**
- * Database configuration type
- */
-interface DbConfig {
-  host: string;
-  port: number;
-  user: string;
-  password: string;
-  database: string;
-  supportBigNumbers: boolean;
-  bigNumberStrings: boolean;
-}
-
-/**
- * Get database configuration from environment variables
- */
-function getDbConfig(): DbConfig {
-  const requiredEnvVars = ['DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
-
-  for (const envVar of requiredEnvVars) {
-    if (!process.env[envVar]) {
-      throw new Error(`Missing required environment variable: ${envVar}`);
-    }
+const getConnectionConfig = (): string | Knex.StaticConnectionConfig => {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL;
   }
-
   return {
-    host: process.env.DB_HOST!,
-    port: parseInt(process.env.DB_PORT!, 10),
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASSWORD!,
-    database: process.env.DB_NAME!,
-    supportBigNumbers: true,
-    bigNumberStrings: true,
-  };
-}
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: parseInt(process.env.DB_PORT || '3306', 10),
+    database: process.env.DB_NAME || 'demo_credit',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    charset: 'utf8mb4',
+  } as Knex.StaticConnectionConfig;
+};
 
-const dbConfig = getDbConfig();
-
-const config: Record<string, Knex.Config> = {
+const config: { [key: string]: Knex.Config } = {
   development: {
     client: 'mysql2',
-    connection: {
-      ...dbConfig,
-      typeCast: (
-        field: { type: string; length: number; string: () => string },
-        next: () => unknown
-      ) => {
-        if (field.type === 'TINY' && field.length === 1) {
-          return field.string() === '1';
-        }
-        return next();
-      },
-    } as Knex.MySql2ConnectionConfig,
+    connection: getConnectionConfig(),
     migrations: {
-      tableName: 'knex_migrations',
       directory: './src/database/migrations',
       extension: 'ts',
     },
@@ -66,15 +29,10 @@ const config: Record<string, Knex.Config> = {
       directory: './src/database/seeds',
     },
   },
-  production: {
+
+  staging: {
     client: 'mysql2',
-    connection: {
-      host: process.env.DB_HOST as string,
-      port: parseInt(process.env.DB_PORT || '3306'),
-      user: process.env.DB_USER as string,
-      password: process.env.DB_PASSWORD as string,
-      database: process.env.DB_NAME as string,
-    },
+    connection: getConnectionConfig(),
     pool: {
       min: 2,
       max: 10,
@@ -82,9 +40,29 @@ const config: Record<string, Knex.Config> = {
     migrations: {
       tableName: 'knex_migrations',
       directory: './src/database/migrations',
+      extension: 'js',
+    },
+    seeds: {
+      directory: './src/database/seeds',
+    },
+  },
+
+  production: {
+    client: 'mysql2',
+    connection: getConnectionConfig(),
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      tableName: 'knex_migrations',
+      directory: './src/database/migrations',
+      extension: 'js',
+    },
+    seeds: {
+      directory: './src/database/seeds',
     },
   },
 };
 
-// Use module.exports for Knex
 export default config;

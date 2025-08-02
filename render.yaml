@@ -11,5 +11,50 @@ services:
         value: 10000
       - key: NPM_CONFIG_PRODUCTION
         value: false
+      - key: DB_HOST
+        fromDatabase:
+          name: demo-credit-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: demo-credit-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: demo-credit-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: demo-credit-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: demo-credit-db
+          property: database
+      - key: DB_POOL_MIN
+        value: "2"
+      - key: DB_POOL_MAX
+        value: "10"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: "30d"
+      - key: LOG_LEVEL
+        value: "info"
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: API_PREFIX
+        value: "/api/v1"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX
+        value: "100"
     healthCheckPath: /health
     autoDeploy: true
+
+databases:
+  - name: demo-credit-db
+    databaseName: demo_credit
+    user: demo_credit_user
+    plan: free
+    region: oregon
