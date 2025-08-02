@@ -13,16 +13,10 @@
     "dev": "cross-env NODE_ENV=production tsx watch src/index.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "render-build": "npm install && npm run build",
-    "build:prod": "npm run build && npm prune --production",
-    "migrate": "knex migrate:latest",
-    "migrate:rollback": "knex migrate:rollback",
-    "migrate:rollback:all": "knex migrate:rollback --all",
-    "seed": "knex seed:run",
-    "seed:rollback": "knex seed:rollback",
-    "seed:rollback:all": "knex seed:rollback --all",
-    "postinstall": "npm run build",
-    "heroku-postbuild": "npm run build"
+    "render-build": "npm install && npm run dev",
+    "build:prod": "npm run dev",
+    "postinstall": "npm run dev",
+    "heroku-postbuild": "npm run dev"
   },
   "keywords": [
     "demo",
