@@ -27,7 +27,16 @@ if (!dbConfig) {
 
 // Helper function to safely get connection config
 const getConnectionConfig = (): Knex.StaticConnectionConfig => {
-  const connection = dbConfig.connection || {};
+  const connection = typeof dbConfig.connection === 'function' 
+    ? dbConfig.connection() 
+    : dbConfig.connection || {};
+    
+  // Ensure SSL is explicitly disabled
+  if (connection) {
+    connection.ssl = false;
+    // @ts-ignore - Add flags to disable SSL
+    connection.flags = ['-NO_SSL'];
+  }
   const safeConnection: Record<string, unknown> = {};
 
   // Convert any symbol values to strings

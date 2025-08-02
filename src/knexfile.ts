@@ -65,6 +65,12 @@ const baseConfig: Knex.Config = {
   connection: {
     ...dbConfig,
     ssl: false, // Explicitly disable SSL
+    // Add additional connection options
+    flags: ['-NO_SSL'], // Tell MySQL client not to use SSL
+    // Force protocol to TCP (some MySQL servers require this)
+    socketPath: undefined,
+    // Add connection timeout
+    connectTimeout: 60000,
     typeCast: (
       field: { type: string; length: number; string: () => string },
       next: () => unknown
@@ -93,9 +99,22 @@ const config: Record<string, Knex.Config> = {
     ...baseConfig,
     connection: {
       ...baseConfig.connection,
-      ssl: false, // Ensure SSL is disabled in production as well
+      // Ensure SSL is explicitly disabled in production
+      ssl: false,
+      // Force disable SSL flags
+      flags: ['-NO_SSL'],
+      // Ensure socket path is not used
+      socketPath: undefined,
+      // Add any production-specific connection options here
       ...(process.env.DATABASE_URL && {
-        // Add any production-specific connection options here
+        // Parse DATABASE_URL if provided
+        ...(process.env.DATABASE_URL ? {
+          host: new URL(process.env.DATABASE_URL).hostname,
+          port: parseInt(new URL(process.env.DATABASE_URL).port || '3306', 10),
+          user: new URL(process.env.DATABASE_URL).username,
+          password: new URL(process.env.DATABASE_URL).password || '',
+          database: new URL(process.env.DATABASE_URL).pathname.replace(/^\//, '')
+        } : {})
       }),
     },
     pool: {
