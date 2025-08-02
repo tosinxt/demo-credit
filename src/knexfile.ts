@@ -60,35 +60,39 @@ function getDbConfig(): DbConfig {
 
 const dbConfig = getDbConfig();
 
+const baseConfig: Knex.Config = {
+  client: 'mysql2',
+  connection: {
+    ...dbConfig,
+    ssl: false, // Explicitly disable SSL
+    typeCast: (
+      field: { type: string; length: number; string: () => string },
+      next: () => unknown
+    ) => {
+      if (field.type === 'TINY' && field.length === 1) {
+        return field.string() === '1';
+      }
+      return next();
+    },
+  } as Knex.MySql2ConnectionConfig,
+  migrations: {
+    tableName: 'knex_migrations',
+    directory: path.join(__dirname, 'database/migrations'),
+    extension: 'ts',
+  },
+  seeds: {
+    directory: path.join(__dirname, 'database/seeds'),
+  },
+};
+
 const config: Record<string, Knex.Config> = {
   development: {
-    client: 'mysql2',
-    connection: {
-      ...dbConfig,
-      ssl: false, // Explicitly disable SSL
-      typeCast: (
-        field: { type: string; length: number; string: () => string },
-        next: () => unknown
-      ) => {
-        if (field.type === 'TINY' && field.length === 1) {
-          return field.string() === '1';
-        }
-        return next();
-      },
-    } as Knex.MySql2ConnectionConfig,
-    migrations: {
-      tableName: 'knex_migrations',
-      directory: path.join(__dirname, 'database/migrations'),
-      extension: 'ts',
-    },
-    seeds: {
-      directory: path.join(__dirname, 'database/seeds'),
-    },
+    ...baseConfig,
   },
   production: {
-    ...config.development,
+    ...baseConfig,
     connection: {
-      ...config.development.connection,
+      ...baseConfig.connection,
       ssl: false, // Ensure SSL is disabled in production as well
       ...(process.env.DATABASE_URL && {
         // Add any production-specific connection options here
