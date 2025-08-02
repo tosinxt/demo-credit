@@ -3,9 +3,13 @@ services:
     name: demo-credit
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    startCommand: node dist/src/index.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+      - key: NPM_CONFIG_PRODUCTION
+        value: false
+    healthCheckPath: /health
+    autoDeploy: true
