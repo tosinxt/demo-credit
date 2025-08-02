@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import config from '../../knexfile.js';
+import config from '../knexfile.js';
 
 // Type guard to check if environment is a valid key of config
 type Environment = keyof typeof config;

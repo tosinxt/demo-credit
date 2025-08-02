@@ -44,8 +44,7 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "knexfile.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
