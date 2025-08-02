@@ -13,10 +13,10 @@
     "dev": "cross-env NODE_ENV=production tsx watch src/index.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "render-build": "npm install && npm run dev",
-    "build:prod": "npm install && npm run dev",
-    "postinstall": "npm install && npm run dev",
-    "heroku-postbuild": "npm install && npm run dev"
+    "render-build": "npm install && npm run build",
+    "build:prod": "npm run build && npm prune --production",
+    "postinstall": "npm install && npm run build",
+    "heroku-postbuild": "npm install && npm run build"
   },
   "keywords": [
     "demo",
